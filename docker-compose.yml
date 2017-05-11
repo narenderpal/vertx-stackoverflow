@@ -1,0 +1,8 @@
+app:
+  image: narenderpal/cmad-demo-lib:v0.3.0
+  links:
+    - mongodb:mongo
+  ports:
+    - 8080
+mongodb:
+  image: mongo:latest
