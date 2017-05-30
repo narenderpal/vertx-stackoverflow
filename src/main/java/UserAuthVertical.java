@@ -39,7 +39,7 @@ public class UserAuthVertical extends AbstractVerticle {
             }
         });
 
-        vertx.eventBus().consumer("com.glarimy.vertx.users.verify", message -> {
+        vertx.eventBus().consumer("com.cisco.vertx.users.verify", message -> {
             System.out.println(message);
             // on the verify endpoint once you verify the identity of the user by its username/password
             JsonObject params = new JsonObject(message.body().toString());
