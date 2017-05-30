@@ -1,5 +1,5 @@
 app:
-  image: narenderpal/cmad-demo-lib:v0.3.0
+  image: narenderpal/vertx-stackoverflow:latest
   links:
     - mongodb:mongo
   ports:
