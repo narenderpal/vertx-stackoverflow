@@ -11,6 +11,8 @@ router.route("/static/*").handler(StaticHandler.create().setWebRoot("web").handl
 //router.route("/book").handler(BodyHandler.create().handle);
 
 router.route("/questions").handler(BodyHandler.create().handle);
+router.route("/questions/*").handler(BodyHandler.create().handle);
+
 
 //router.get("/questions").handler(handleListQuestions);
 router.get("/questions").handler(
@@ -30,6 +32,8 @@ router.get("/questions").handler(
 router.post("/questions").handler(
     function(rctx) {
         console.log("Add a question...");
+        console.log(rctx.getBodyAsJson());
+
         vertx.eventBus().send(
             "com.cisco.vertx.questions.post",
             rctx.getBodyAsJson(),
@@ -82,12 +86,18 @@ router.post("/questions/:qID/answers").handler(
 router.put("/questions/:qID/answers/:aID").handler(
     function(rctx) {
         console.log("Updating an answer...");
+        var options = {
+            headers: {
+                "qID": rctx.request().getParam("qID"),
+                "aID": rctx.request().getParam("aID")
+            }
+        };
         vertx.eventBus().send(
             "com.cisco.vertx.answers.put",
-            {"qID": rctx.request().getParam("qID"), "aID": rctx.request().getParam("aID")},
             rctx.getBodyAsJson(),
+            options,
             function(reply, err) {
-                rctx.response().setStatusCode(200)
+                rctx.response().setStatusCode(201)
                     .putHeader("Content-Type", "application/json")
                     .putHeader("Location", reply.body())
                     .end();
@@ -103,7 +113,7 @@ router.put("/questions/:qID/answers/:aID/upvote").handler(
             {"qID": rctx.request().getParam("qID"), "aID": rctx.request().getParam("aID")},
             rctx.getBodyAsJson(),
             function(reply, err) {
-                rctx.response().setStatusCode(200)
+                rctx.response().setStatusCode(201)
                     .putHeader("Content-Type", "application/json")
                     .putHeader("Location", reply.body())
                     .end();
@@ -119,7 +129,7 @@ router.put("/questions/:qID/upvote").handler(
             {"qID": rctx.request().getParam("qID")},
             rctx.getBodyAsJson(),
             function(reply, err) {
-                rctx.response().setStatusCode(200)
+                rctx.response().setStatusCode(201)
                     .putHeader("Content-Type", "application/json")
                     .putHeader("Location", reply.body())
                     .end();
@@ -135,7 +145,7 @@ router.put("/questions/:qID/answers/:aID/downvote").handler(
             {"qID": rctx.request().getParam("qID"), "aID": rctx.request().getParam("aID")},
             rctx.getBodyAsJson(),
             function(reply, err) {
-                rctx.response().setStatusCode(200)
+                rctx.response().setStatusCode(201)
                     .putHeader("Content-Type", "application/json")
                     .putHeader("Location", reply.body())
                     .end();
@@ -151,7 +161,7 @@ router.put("/questions/:qID/downvote").handler(
             {"qID": rctx.request().getParam("qID")},
             rctx.getBodyAsJson(),
             function(reply, err) {
-                rctx.response().setStatusCode(200)
+                rctx.response().setStatusCode(201)
                     .putHeader("Content-Type", "application/json")
                     .putHeader("Location", reply.body())
                     .end();
@@ -177,7 +187,7 @@ router.get("/questions/:qID").handler(
 
 var options = { "logActivity" : true };
 var server = vertx.createHttpServer(options);
-server.requestHandler(router.accept).listen(8080);
+server.requestHandler(router.accept).listen(8084);
 
 
 /*

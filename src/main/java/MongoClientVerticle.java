@@ -3,8 +3,10 @@ import java.util.List;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
+import org.bson.types.ObjectId;
 
 /**
  * Created by napal on 15/05/17.
@@ -25,9 +27,9 @@ public class MongoClientVerticle extends AbstractVerticle {
         String uri = config.getString("mongo_uri");
         if (uri == null) {
             // running locally using local mongo
-            //uri = "mongodb://localhost:27017";
+            uri = "mongodb://localhost:27017";
             // using mongo docker container
-            uri = "mongodb://mongo:27017";
+            //uri = "mongodb://mongo:27017";
         }
         String dbName = config.getString("mongo_db");
         if (dbName == null) {
@@ -112,14 +114,20 @@ public class MongoClientVerticle extends AbstractVerticle {
 
         vertx.eventBus().consumer("com.cisco.vertx.answers.post", message -> {
             System.out.println("headers:" + message.headers().get("qID"));
-            System.out.println("body:"+ message.body());
+            System.out.println("body:"+ message.body().toString());
 
-            JsonObject params = new JsonObject(message.body().toString());
-            String qID = params.getString("qID");
+            JsonObject ans = new JsonObject(message.body().toString());
+            ans.put("_id", new ObjectId().toHexString());
 
-            mongoClient.insert("questions", params, res -> {
+            String qID = message.headers().get("qID");
+
+            JsonObject query = new JsonObject().put("_id", qID);
+            JsonObject update = new JsonObject().put("$push", new JsonObject()
+                    .put("answers", ans));
+
+            mongoClient.findOneAndUpdate("questions", query, update, res -> {
                 if (res.succeeded()) {
-                    message.reply(res.result());
+                    message.reply("questions updated with a new answer !");
                 } else {
                     res.cause().printStackTrace();
                     message.reply(res.result());
@@ -128,23 +136,29 @@ public class MongoClientVerticle extends AbstractVerticle {
         });
 
         vertx.eventBus().consumer("com.cisco.vertx.answers.put", message -> {
-            System.out.println("headers:" + message.headers().toString());
+            System.out.println("headers:" + message.headers().get("qID"));
             System.out.println("body:"+ message.body().toString());
 
-            JsonObject params = new JsonObject(message.body().toString());
-            System.out.println(params);
-            String qID = params.getString("qID");
-            String aID = params.getString("aID");
+            String qID = message.headers().get("qID");
+            String aID = message.headers().get("aID");
 
-            mongoClient.insert("questions", params, res -> {
+            JsonObject ans = new JsonObject(message.body().toString());
+            ans.put("_id", aID);
+
+            JsonObject query = new JsonObject().put("_id", qID);
+            JsonObject update = new JsonObject().put("$push", new JsonObject()
+                    .put("answers", ans));
+
+            mongoClient.findOneAndUpdate("questions", query, update, res -> {
                 if (res.succeeded()) {
-                    message.reply(res.result());
+                    message.reply("Successfully updated answer");
                 } else {
                     res.cause().printStackTrace();
                     message.reply(res.result());
                 }
             });
         });
+
 
         vertx.eventBus().consumer("com.cisco.vertx.questions.upvote", message -> {
             System.out.println("headers:" + message.headers().toString());
