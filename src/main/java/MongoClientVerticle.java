@@ -24,7 +24,10 @@ public class MongoClientVerticle extends AbstractVerticle {
 
         String uri = config.getString("mongo_uri");
         if (uri == null) {
-            uri = "mongodb://localhost:27017";
+            // running locally using local mongo
+            //uri = "mongodb://localhost:27017";
+            // using mongo docker container
+            uri = "mongodb://mongo:27017";
         }
         String dbName = config.getString("mongo_db");
         if (dbName == null) {
