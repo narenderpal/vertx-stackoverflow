@@ -18,14 +18,14 @@ public class UserAuthVertical extends AbstractVerticle {
 
     @Override
     public void start(Future<Void> future) throws Exception {
-
+/*
         JsonObject conf = new JsonObject().put("keyStore", new JsonObject()
                 .put("path", "keystore.jceks")
                 .put("type", "jceks")
                 .put("password", "secret"));
 
         Router router = Router.router(vertx);
-        JWTAuth authProvider = JWTAuth.create(vertx, conf);
+        JWTAuth authProvider = JWTAuth.create(vertx, conf);*/
 
         JsonObject config = Vertx.currentContext().config();
 
@@ -85,7 +85,8 @@ public class UserAuthVertical extends AbstractVerticle {
                 if (result.succeeded()) {
                     JsonObject json = result.result().get(0);
                     if (name.equals(json.getString("username")) && password.equals(json.getString("password"))) {
-                        message.reply(authProvider.generateToken(new JsonObject().put("sub", user), new JWTOptions()));
+                        message.reply("Auth test");
+                        //message.reply(authProvider.generateToken(new JsonObject().put("sub", user), new JWTOptions()));
                     } else {
                         message.reply(401);
                     }
