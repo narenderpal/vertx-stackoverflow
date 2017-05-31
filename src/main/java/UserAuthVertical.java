@@ -123,8 +123,8 @@ public class UserAuthVertical extends AbstractVerticle {
             String password = params.getString("password");
 
             if ("paulo".equals(username) && "super_secret".equals(password)) {
-                String token = authProvider.generateToken(new JsonObject().put("sub", "paulo"), new JWTOptions());
-                message.reply(token);
+                //String token = authProvider.generateToken(new JsonObject().put("sub", "paulo"), new JWTOptions());
+                //message.reply(token);
                 // now for any request to protected resources you should pass this string in the HTTP header Authorization as:
                 // Authorization: Bearer <token>
             }
