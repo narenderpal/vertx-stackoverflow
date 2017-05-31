@@ -254,6 +254,6 @@ router.get("/users").handler(
 
 var options = { "logActivity" : true };
 var server = vertx.createHttpServer(options);
-server.requestHandler(router.accept).listen(8084);
+server.requestHandler(router.accept).listen(8080);
 
 
