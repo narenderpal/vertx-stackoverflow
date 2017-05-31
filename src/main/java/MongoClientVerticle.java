@@ -12,9 +12,7 @@ import org.bson.types.ObjectId;
  * Created by napal on 15/05/17.
  */
 public class MongoClientVerticle extends AbstractVerticle {
-    /*
-  Convenience method so you can run it in your IDE
-   */
+
     //public static void main(String[] args) {
       //  Runner.runExample(MongoClientVerticle.class);
     //}
@@ -27,9 +25,9 @@ public class MongoClientVerticle extends AbstractVerticle {
         String uri = config.getString("mongo_uri");
         if (uri == null) {
             // running locally using local mongo
-            uri = "mongodb://localhost:27017";
+            //uri = "mongodb://localhost:27017";
             // using mongo docker container
-            //uri = "mongodb://mongo:27017";
+            uri = "mongodb://mongo:27017";
         }
         String dbName = config.getString("mongo_db");
         if (dbName == null) {
@@ -253,6 +251,21 @@ public class MongoClientVerticle extends AbstractVerticle {
                 }
             });
         }); */
+
+        vertx.eventBus().consumer("com.cisco.vertx.users.getAll", message -> {
+            System.out.println("headers:" + message.headers().toString());
+            System.out.println("body:"+ message.body().toString());
+
+            mongoClient.find("users", new JsonObject(), result -> {
+                if (result.succeeded()) {
+                    List<JsonObject> users = result.result();
+                    message.reply(Json.encodePrettily(users));
+                } else {
+                    result.cause().printStackTrace();
+                    message.reply(result.result());
+                }
+            });
+        });
 
     }
 
