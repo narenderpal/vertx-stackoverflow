@@ -1,4 +1,3 @@
-#FROM schoolofdevops/voteapp-mvn:v0.1.0
 FROM maven:latest
 
 WORKDIR /app

@@ -28,3 +28,13 @@ Design Review Checklist
 2. List of collections with document structure
 3. List of verticals with objectives
 4. List of events with objectives
+
+### Build Pipeline
+![Tech stack](/docs/screenshots/staging-build-pipeline.png)
+
+### Docker hub repo
+![Arch diag](/docs/screenshots/docker-hub-image.png)
+
+### SonarQube Static Code Analysis
+![gc_vm_instances diag](/docs/screenshots/sonar-qube-sca.png)
+
