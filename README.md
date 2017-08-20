@@ -23,7 +23,7 @@ Technology Stack to be used
 ### Build Pipeline
 ![Tech stack](/docs/screenshots/staging-build-pipeline.png)
 
-### Docker hub repo
+### Docker Hub repo
 ![Arch diag](/docs/screenshots/docker-hub-image.png)
 
 ### SonarQube Static Code Analysis
